@@ -19,23 +19,33 @@ def print_veggies(veggies)
   end
 end
 
-veggies = []
-loop do
-  veggie = {}
-  puts 'Enter Vegetable:'.green
-  veggie[:name] = STDIN.gets.chomp
-  break if veggie[:name].blank?
-  puts 'Enter Weeks Before to Frost To Seed:'.green
-  veggie[:sow_date] = frost_date - STDIN.gets.chomp.to_i.weeks
-  puts 'Direct Seed?'
-  veggie[:direct_seed] = STDIN.gets.chomp == 'y'
-
-  unless veggie[:direct_seed]
-    puts 'Enter Weeks Before to Frost To Transplant:'.green
-    veggie[:transplant_date] = frost_date - STDIN.gets.chomp.to_i.weeks
+def ask(question)
+  puts question
+  response = ''
+  while response == ''
+    response = STDIN.gets.chomp
   end
-
-  veggies.push veggie
+  response
 end
+begin
+  veggies = []
+  loop do
+    veggie = {}
+    veggie[:name] = ask 'Enter Vegetable: (type exit to finish)'
+    break if veggie[:name] == 'exit'
+    week_ofset = ask 'Enter Weeks Before to Frost To Seed:'
+    veggie[:sow_date] = frost_date - week_ofset.to_i.weeks
+    response = ask 'Direct Seed?'
+    veggie[:direct_seed] = response == 'y'
 
+    unless veggie[:direct_seed]
+      transplant_ofset = ask 'Enter Weeks Before to Frost To Transplant:'
+      veggie[:transplant_date] = frost_date - transplant_ofset.to_i.weeks
+    end
+
+    veggies.push veggie
+  end
+rescue
+  binding.pry
+end
 print_veggies(veggies)
