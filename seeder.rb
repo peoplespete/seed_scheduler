@@ -3,8 +3,6 @@ require 'date'
 require 'pry'
 require 'rails'
 
-frost_date = Date.new(2016, 4, 15)
-
 def print_veggies(veggies)
   lines = []
   veggies.each do |veggie|
@@ -28,6 +26,9 @@ def ask(question)
   response
 end
 begin
+  frost_date = ask 'Enter Frost Date: (YYYY/MM/DD)'
+  frost_date = Date.new(*frost_date.split('/').map(&:to_i))
+
   veggies = []
   loop do
     veggie = {}
