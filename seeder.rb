@@ -2,19 +2,28 @@ require 'colorize'
 require 'date'
 require 'pry'
 require 'rails'
+require 'csv'
+
+# 1.5-3 lbs  of fertilizer/ 100 sq ft
+# 12*8 = 96 sq ft (my garden)
 
 def print_veggies(veggies)
-  lines = []
-  veggies.each do |veggie|
-    method = veggie[:direct_seed] ? 'Outdoors' : 'Indoors'
-    lines.push ["Sow #{veggie[:name]} #{method} on #{veggie[:sow_date]}", veggie[:sow_date]]
-    if veggie[:transplant_date]
-      lines.push ["Transplant #{veggie[:name]} Outdoors on #{veggie[:transplant_date]}", veggie[:transplant_date]]
+  CSV.open("csv/#{DateTime.now.to_i}.csv", 'wb') do |csv|
+    csv << ['Subject', 'Start date', 'All Day Event']
+    # Final exam  05/30/2020  true
+    veggies.each do |veggie|
+      method = veggie[:direct_seed] ? 'Outdoors' : 'Indoors'
+      subject = "Sow #{veggie[:name]} #{method}"
+      date = veggie[:sow_date]
+      csv << [subject, date, true]
+      if veggie[:transplant_date]
+        subject = "Transplant #{veggie[:name]} Outdoors"
+        date = veggie[:transplant_date]
+        csv << [subject, date, true]
+      end
     end
   end
-  lines.sort_by{ |l| l.last }.each do |line|
-    puts line.first
-  end
+  puts 'csv created'
 end
 
 def ask(question)
